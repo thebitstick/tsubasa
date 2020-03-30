@@ -1,0 +1,44 @@
+#!/bin/bash
+
+## Temporary ShareXin
+
+basename="$(basename $0)"
+filename="screenshot-$(date '+%Y-%m-%d-%H-%M-%S').png"
+location="$(xdg-user-dir PICTURES)"
+message=
+
+if [ $# -eq 0 ]; then
+	gnome-screenshot --file="$location/$filename"
+else
+	## Hope that the user uses "area" or "window"
+	gnome-screenshot --$1 --file="$location/$filename"
+fi
+
+if [ ! -f $location/$filename ]; then
+	echo "$basename: file not saved"
+	exit 1
+else
+	notify-send --icon="$location/$filename" --expire-time=5000 \
+		"$basename: Screenshot Saved" "Saved to $location/$filename"
+fi
+
+message=$(zenity --entry --text=Message --title="Share to Fediverse" \
+	--ok-label=Send --cancel-label=Cancel)
+
+if [ $? -eq 1 ]; then
+	echo "$basename: cancelled by user"
+	exit 1
+fi
+
+toot post --media="$location/$filename" "$message"
+
+if [ $? -eq 1 ]; then
+        echo "$basename: unable to post status"
+        notify-send --expire-time=5000 "$basename" "Unable to post status"
+        exit 1
+else
+        echo "$basename: status post successful"
+        notify-send --expire-time=5000 "$basename" "Status Post Successful"
+fi
+
+exit 0

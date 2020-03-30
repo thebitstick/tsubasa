@@ -1,8 +1,0 @@
-[package]
-name = "tsubasa"
-version = "0.1.0"
-authors = ["thebitstick <thebitstick@tfwno.gf>"]
-edition = "2018"
-
-[dependencies]
-getopts = "0.2.21"
