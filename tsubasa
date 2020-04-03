@@ -1,10 +1,51 @@
 #!/bin/bash
 
 # Tsubasa
-# Script for sharing screenshots and/or staus updates using [ihabunek/toot](https://github.com/ihabunek/toot)
+# Script for sharing screenshots and/or status updates using [ihabunek/toot](https://github.com/ihabunek/toot)
 
 basename="$(basename $0)"
 message=
+verbosity=0
+
+check_verbosity() {
+	if [ $verbosity -eq 1 ]; then
+		echo "$1"
+	fi
+}
+
+usage() {
+	cat <<EOF
+Usage:
+	$basename [OPTION...] <command>
+
+Help Options:
+	-h	Show help options
+	-V	Print version information and exit
+	-v	Print debug logging
+
+Application Commands:
+	nothing		(default) Saves a screenshot to the XDG Pictures directory and shares to Fediverse via toot
+	window		Saves a screenshot of the current window to the XDG Pictures directory and shares to Fediverse via toot
+	area		Saves a screenshot of a selected region to the XDG Pictures directory and shares to Fediverse via toot
+
+EOF
+}
+
+version() {
+	cat <<EOF
+$basename $(gnome-screenshot --version | awk '{ print $2 }')
+EOF
+	exit 0
+}
+
+while getopts "hVv" option; do
+	case "${option}" in
+		h) usage; exit 0;;
+		V) version;;
+		v) verbosity=1;;
+	esac
+done
+shift $((OPTIND-1))
 
 ##- Start of screenshot-specific commands -##
 location="$(xdg-user-dir PICTURES)"
@@ -13,30 +54,43 @@ filename="screenshot-$(date '+%Y-%m-%d-%H-%M-%S').png"
 fullname="$location/$sublocation/$filename"
 
 if [ ! -d $location ]; then
+	check_verbosity "mkdir -p '$location'"
 	mkdir -p "$location"
 	echo "$basename: xdg pictures directory defined but doesn't exist. creating $location"
 fi
 
 if [ ! -d $location/$sublocation ]; then
+	check_verbosity "mkdir -p '$location/$sublocation'"
 	mkdir -p "$location/$sublocation"
 	echo "$basename: tsubasa directory under xdg pictures directory doesn't exist. creating $location/$sublocation"
 fi
 
 if [ $# -eq 0 ]; then
+	check_verbosity "gnome-screenshot --file='$fullname'"
 	gnome-screenshot --file="$fullname"
-else
-	## Hope that the user uses "area" or "window"
+elif [ $1 = "window" ] || [ $1 = "area" ]; then
+	check_verbosity "gnome-screenshot --$1 --file='$fullname'"
 	gnome-screenshot --$1 --file="$fullname"
+else
+	echo "$basename: unknown command"
+	usage
+	exit 1
 fi
 
 if [ ! -f $fullname ]; then
 	echo "$basename: file not saved"
 	exit 1
 else
+	check_verbosity "notify-send --icon='$fullname' --expire-time=5000 \
+		'$basename: Screenshot Saved' 'Saved to $fullname'"
 	notify-send --icon="$fullname" --expire-time=5000 \
 		"$basename: Screenshot Saved" "Saved to $fullname"
 fi
 
+##- End of screenshot-specific commands -##
+
+check_verbosity "message=(zenity --entry --text=Message --title='Share to Fediverse' \
+	--ok-label=Send --cancel-label=Cancel)"
 message=$(zenity --entry --text=Message --title="Share to Fediverse" \
 	--ok-label=Send --cancel-label=Cancel)
 
@@ -45,16 +99,17 @@ if [ $? -eq 1 ]; then
 	exit 1
 fi
 
-##- End of screenshot-specific commands -##
-
+check_verbosity "toot post --media='$fullname' '$message'"
 toot post --media="$fullname" "$message"
 
 if [ $? -eq 1 ]; then
 	echo "$basename: unable to post status"
+	check_verbosity "notify-send --expire-time=5000 '$basename' 'Unable to post status'"
 	notify-send --expire-time=5000 "$basename" "Unable to post status"
 	exit 1
 else
 	echo "$basename: status post successful"
+	check_verbosity "notify-send --expire-time=5000 '$basename' 'Status Post Successful'"
 	notify-send --expire-time=5000 "$basename" "Status Post Successful"
 fi
 
