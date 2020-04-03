@@ -1,9 +1,11 @@
 #!/bin/bash
 
-## Temporary ShareXin
+# Tsubasa
+# Script for sharing screenshots and/or staus updates using [ihabunek/toot](https://github.com/ihabunek/toot)
 
 basename="$(basename $0)"
-message=$(zenity --entry --text=Message --title="Share to Fediverse" --ok-label=Send --cancel-label=Cancel)
+message=$(zenity --entry --text=Message --title="Share to Fediverse" \
+	--ok-label=Send --cancel-label=Cancel)
 
 if [ $? -eq 1 ]; then
 	echo "$basename: cancelled by user"

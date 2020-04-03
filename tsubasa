@@ -1,25 +1,38 @@
 #!/bin/bash
 
-## Temporary ShareXin
+# Tsubasa
+# Script for sharing screenshots and/or staus updates using [ihabunek/toot](https://github.com/ihabunek/toot)
 
 basename="$(basename $0)"
-filename="screenshot-$(date '+%Y-%m-%d-%H-%M-%S').png"
 location="$(xdg-user-dir PICTURES)"
+sublocation="Tsubasa/$(date '+%Y-%m')"
+filename="screenshot-$(date '+%Y-%m-%d-%H-%M-%S').png"
+fullname="$location/$sublocation/$filename"
 message=
 
-if [ $# -eq 0 ]; then
-	gnome-screenshot --file="$location/$filename"
-else
-	## Hope that the user uses "area" or "window"
-	gnome-screenshot --$1 --file="$location/$filename"
+if [ ! -d $location ]; then
+	mkdir -p "$location"
+	echo "$basename: xdg pictures directory defined but doesn't exist. creating $location"
 fi
 
-if [ ! -f $location/$filename ]; then
+if [ ! -d $location/$sublocation ]; then
+	mkdir -p "$location/$sublocation"
+	echo "$basename: tsubasa directory under xdg pictures directory doesn't exist. creating $location/$sublocation"
+fi
+
+if [ $# -eq 0 ]; then
+	gnome-screenshot --file="$fullname"
+else
+	## Hope that the user uses "area" or "window"
+	gnome-screenshot --$1 --file="$fullname"
+fi
+
+if [ ! -f $fullname ]; then
 	echo "$basename: file not saved"
 	exit 1
 else
-	notify-send --icon="$location/$filename" --expire-time=5000 \
-		"$basename: Screenshot Saved" "Saved to $location/$filename"
+	notify-send --icon="$fullname" --expire-time=5000 \
+		"$basename: Screenshot Saved" "Saved to $fullname"
 fi
 
 message=$(zenity --entry --text=Message --title="Share to Fediverse" \
@@ -30,15 +43,15 @@ if [ $? -eq 1 ]; then
 	exit 1
 fi
 
-toot post --media="$location/$filename" "$message"
+toot post --media="$fullname" "$message"
 
 if [ $? -eq 1 ]; then
-        echo "$basename: unable to post status"
-        notify-send --expire-time=5000 "$basename" "Unable to post status"
-        exit 1
+	echo "$basename: unable to post status"
+	notify-send --expire-time=5000 "$basename" "Unable to post status"
+	exit 1
 else
-        echo "$basename: status post successful"
-        notify-send --expire-time=5000 "$basename" "Status Post Successful"
+	echo "$basename: status post successful"
+	notify-send --expire-time=5000 "$basename" "Status Post Successful"
 fi
 
 exit 0
