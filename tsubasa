@@ -33,7 +33,7 @@ EOF
 
 version() {
 	cat <<EOF
-$basename $(gnome-screenshot --version | awk '{ print $2 }')
+$basename $(zenity --version)
 EOF
 	exit 0
 }
