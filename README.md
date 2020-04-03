@@ -1,6 +1,6 @@
 # Tsubasa
 
-Script for sharing screenshots and/or staus updates using [ihabunek/toot](https://github.com/ihabunek/toot)
+Script for sharing screenshots and/or status updates using [ihabunek/toot](https://github.com/ihabunek/toot)
 
 ### Disclaimer
 I had originally planned on developing a successor to ShareXin, that was properly maintained and fully implemented in Rust.
