@@ -4,11 +4,13 @@
 # Script for sharing screenshots and/or staus updates using [ihabunek/toot](https://github.com/ihabunek/toot)
 
 basename="$(basename $0)"
+message=
+
+##- Start of screenshot-specific commands -##
 location="$(xdg-user-dir PICTURES)"
 sublocation="Tsubasa/$(date '+%Y-%m')"
 filename="screenshot-$(date '+%Y-%m-%d-%H-%M-%S').png"
 fullname="$location/$sublocation/$filename"
-message=
 
 if [ ! -d $location ]; then
 	mkdir -p "$location"
@@ -42,6 +44,8 @@ if [ $? -eq 1 ]; then
 	echo "$basename: cancelled by user"
 	exit 1
 fi
+
+##- End of screenshot-specific commands -##
 
 toot post --media="$fullname" "$message"
 
