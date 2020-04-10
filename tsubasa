@@ -36,13 +36,12 @@ version() {
 	cat <<EOF
 $basename $(zenity --version)
 EOF
-	exit 0
 }
 
 while getopts "hVv" option; do
 	case "${option}" in
 		h) usage; exit 0;;
-		V) version;;
+		V) version; exit 0;;
 		v) verbosity=1;;
 	esac
 done
