@@ -1,79 +1,95 @@
-#!/bin/bash
+#!/bin/env fish
 
 # Tsubasa
-# Script for sharing screenshots and/or status updates using [ihabunek/toot](https://github.com/ihabunek/toot)
+# Script for sharing screenshots and/or status updates using [McKael/madonctl](https://github.com/McKael/madonctl)
 
-basename="$(basename $0)"
-message=
-verbosity=0
+set basename (basename (status -f))
+set arg
+set message
+set verbosity 0
+set fullname
 
-check_verbosity() {
-	if [ $verbosity -eq 1 ]; then
-		echo "$1"
-	fi
-}
+function check_verbosity
+	if test $verbosity -eq 1
+		echo "$argv" 
+	end
+end
 
-usage() {
-	cat <<EOF
-Usage:
-	$basename [OPTION...] <command>
+function usage
+	echo "Usage:"
+	echo "$basename [OPTION...] <command>"
+	echo ""
+	echo "Help Options:"
+	echo "	-h,--help	Show help options"
+	echo "	-V,--version	Print version information and exit"
+	echo "	-v,--verbose	Print debug logging"
+	echo ""
+	echo "Application Commands:"
+	echo "	nothing		(default) Saves a screenshot to the XDG Pictures directory and shares to Fediverse via toot"
+	echo "	window		Saves a screenshot of the current window to the XDG Pictures directory and shares to Fediverse via toot"
+	echo "	area		Saves a screenshot of a selected region to the XDG Pictures directory and shares to Fediverse via toot"
+	echo "	text		Share a status update to Fediverse via toot"
+	echo ""
+end
 
-Help Options:
-	-h	Show help options
-	-V	Print version information and exit
-	-v	Print debug logging
+function version
+	echo "$basename "(zenity --version)
+end
 
-Application Commands:
-	nothing		(default) Saves a screenshot to the XDG Pictures directory and shares to Fediverse via toot
-	window		Saves a screenshot of the current window to the XDG Pictures directory and shares to Fediverse via toot
-	area		Saves a screenshot of a selected region to the XDG Pictures directory and shares to Fediverse via toot
-	text		Share a status update to Fediverse via toot
+for item in $argv
+	switch $item
+		case "-h" "--help"
+			usage
+			exit 0
+		case "-V" "--version"
+			version
+			exit 0
+		case "-v" "--verbose"
+			set verbosity 1
+		case '*'
+			if test "$item" != "-v" || test "$item" != "--verbose"
+				set arg $item
+			end
+	end
+end
 
-EOF
-}
+function screenshot
+	set location (xdg-user-dir PICTURES)
+	set sublocation "Tsubasa/"(date '+%Y-%m')
+	set filename "screenshot-"(date '+%Y-%m-%d-%H-%M-%S')".png"
+	set fullname "$location/$sublocation/$filename"
 
-version() {
-	cat <<EOF
-$basename $(zenity --version)
-EOF
-}
-
-while getopts "hVv" option; do
-	case "${option}" in
-		h) usage; exit 0;;
-		V) version; exit 0;;
-		v) verbosity=1;;
-	esac
-done
-shift $((OPTIND-1))
-
-screenshot() {
-	location="$(xdg-user-dir PICTURES)"
-	sublocation="Tsubasa/$(date '+%Y-%m')"
-	filename="screenshot-$(date '+%Y-%m-%d-%H-%M-%S').png"
-	fullname="$location/$sublocation/$filename"
-
-	if [ ! -d $location ]; then
+	if test ! -d $location
 		check_verbosity "mkdir -p '$location'"
 		mkdir -p "$location"
 		echo "$basename: xdg pictures directory defined but doesn't exist. creating $location"
-	fi
+	end
 
-	if [ ! -d $location/$sublocation ]; then
+	if test ! -d $location/$sublocation
 		check_verbosity "mkdir -p '$location/$sublocation'"
 		mkdir -p "$location/$sublocation"
 		echo "$basename: tsubasa directory under xdg pictures directory doesn't exist. creating $location/$sublocation"
-	fi
+	end
 
-	if [ $# -eq 0 ]; then
+	if test "$DISPLAY" = ""
+		echo "$basename: no X or Wayland display detected"
+		exit 1
+	end
+
+	if ! gnome-screenshot --version
+		echo "$basename: gnome-screenshot not found in PATH"
+		exit 1
+	end
+
+	if test "$arg" = ""
 		check_verbosity "gnome-screenshot --file='$fullname'"
 		gnome-screenshot --file="$fullname"
 	else
-		check_verbosity "gnome-screenshot --$1 --file='$fullname'"
-		gnome-screenshot --$1 --file="$fullname"
-	fi
+		check_verbosity "gnome-screenshot --$arg --file='$fullname'"
+		gnome-screenshot --"$arg" --file="$fullname"
+	end
 
-	if [ ! -f $fullname ]; then
+	if test ! -f $fullname
 		echo "$basename: file not saved"
 		exit 1
 	else
@@ -81,38 +97,48 @@ screenshot() {
 			'$basename: Screenshot Saved' 'Saved to $fullname'"
 		notify-send --icon="$fullname" --expire-time=5000 \
 			"$basename: Screenshot Saved" "Saved to $fullname"
-	fi
-}
+	end
+end
 
-if [ $# -eq 0 ]; then
+if test "$arg" = ""
 	screenshot
-elif [ $1 = "window" ] || [ $1 = "area" ]; then
-	screenshot $1
-elif [ $1 != "text" ]; then
+else if test "$arg" = "window" || test "$arg" = "area"
+	screenshot "$arg"
+else if test "$arg" != "text"
 	echo "$basename: unknown command"
 	usage
 	exit 1
-fi
+end
+
+if ! zenity --version
+	echo "$basename: zenity not found in PATH"
+	exit 1
+end
 
 check_verbosity "message=(zenity --entry --text=Message --title='Share to Fediverse' \
 	--ok-label=Send --cancel-label=Cancel)"
-message=$(zenity --entry --text=Message --title="Share to Fediverse" \
+set message (zenity --entry --text=Message --title="Share to Fediverse" \
 	--ok-label=Send --cancel-label=Cancel)
 
-if [ $? -eq 1 ]; then
+if test $status -eq 1
 	echo "$basename: cancelled by user"
 	exit 1
-fi
+end
 
-if [ $# -eq 0 ] || [ $1 = "window" ] || [ $1 = "area" ]; then
-	check_verbosity "toot post --media='$fullname' '$message'"
-	toot post --media="$fullname" "$message"
+if ! command -q madonctl
+	echo "$basename: madonctl not found in PATH"
+	exit 1
+end
+
+if test "$arg" = "" || test "$arg" = "window" || test "$arg" = "area"
+	check_verbosity "madonctl post --file='$fullname' '$message'"
+	madonctl post --file="$fullname" "$message"
 else
-	check_verbosity "toot post '$message'"
-	toot post "$message"
-fi
+	check_verbosity "madonctl post '$message'"
+	madonctl post "$message"
+end
 
-if [ $? -eq 1 ]; then
+if test $status -eq 1
 	echo "$basename: unable to post status"
 	check_verbosity "notify-send --expire-time=5000 '$basename' 'Unable to post status'"
 	notify-send --expire-time=5000 "$basename" "Unable to post status"
@@ -121,6 +147,6 @@ else
 	echo "$basename: status post successful"
 	check_verbosity "notify-send --expire-time=5000 '$basename' 'Status Post Successful'"
 	notify-send --expire-time=5000 "$basename" "Status Post Successful"
-fi
+end
 
 exit 0
