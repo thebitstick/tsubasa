@@ -131,11 +131,11 @@ if ! command -q madonctl
 end
 
 if test "$arg" = "" || test "$arg" = "window" || test "$arg" = "area"
-	check_verbosity "madonctl post --file='$fullname' '$message'"
-	madonctl post --file="$fullname" "$message"
+	check_verbosity "toot post --media='$fullname' '$message'"
+	toot post --media="$fullname" "$message"
 else
-	check_verbosity "madonctl post '$message'"
-	madonctl post "$message"
+	check_verbosity "toot post '$message'"
+	toot post "$message"
 end
 
 if test $status -eq 1
