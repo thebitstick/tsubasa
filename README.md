@@ -1,6 +1,6 @@
 # Tsubasa
 
-Script for sharing screenshots and/or status updates using [McKael/madonctl](https://github.com/McKael/madonctl)
+Script for sharing screenshots and/or status updates using [ihabunek/toot](https://github.com/ihabunek/toot)
 
 ### Disclaimer
 I had originally planned on developing a successor to ShareXin, that was properly maintained and fully implemented in Rust.
