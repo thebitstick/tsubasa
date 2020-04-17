@@ -125,8 +125,8 @@ if test $status -eq 1
 	exit 1
 end
 
-if ! command -q madonctl
-	echo "$basename: madonctl not found in PATH"
+if ! command -q toot
+	echo "$basename: toot not found in PATH"
 	exit 1
 end
 
