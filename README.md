@@ -3,12 +3,14 @@
 Script for sharing screenshots and/or status updates using [ihabunek/toot](https://github.com/ihabunek/toot)
 
 ## Installation
-#### AUR
+### AUR
 `yay -S tsubasa-git` for [tsubasa-git](https://aur.archlinux.org/packages/tsubasa-git/)
-#### PKGBUILD
+### PKGBUILD
 `makepkg -sic`
-#### Other
+### Other
 It's just a shell script. Put it in your $PATH and you're good.
+
+---
 
 ### Disclaimer
 I had originally planned on developing a successor to ShareXin, that was properly maintained and fully implemented in Rust.
