@@ -115,10 +115,10 @@ if ! zenity --version
 	exit 1
 end
 
-check_verbosity "message=(zenity --entry --text=Message --title='Share to Fediverse' \
-	--ok-label=Send --cancel-label=Cancel)"
-set message (zenity --entry --text=Message --title="Share to Fediverse" \
-	--ok-label=Send --cancel-label=Cancel)
+check_verbosity "message=(zenity --title='Share to Fediverse' --ok-label=Send \
+	--cancel-label=Cancel --text-info --editable --width=350 --height=250)"
+zenity --title='Share to Fediverse' --ok-label=Send --cancel-label=Cancel \
+	--text-info --editable --width=350 --height=250 | read -z message
 
 if test $status -eq 1
 	echo "$basename: cancelled by user"
@@ -132,10 +132,10 @@ end
 
 if test "$arg" = "" || test "$arg" = "window" || test "$arg" = "area"
 	check_verbosity "toot post --media='$fullname' '$message'"
-	toot post --media="$fullname" "$message"
+	echo $message | toot post --media="$fullname"
 else
 	check_verbosity "toot post '$message'"
-	toot post "$message"
+	echo $message | toot post
 end
 
 if test $status -eq 1
