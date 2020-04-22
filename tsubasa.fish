@@ -57,7 +57,7 @@ function screenshot
 	set location (xdg-user-dir PICTURES)
 	set sublocation "Tsubasa/"(date '+%Y-%m')
 	set filename "screenshot-"(date '+%Y-%m-%d-%H-%M-%S')".png"
-	set fullname "$location/$sublocation/$filename"
+	set fullname "$location/Screenshots/$sublocation/$filename"
 
 	if test ! -d $location
 		check_verbosity "mkdir -p '$location'"
@@ -65,10 +65,10 @@ function screenshot
 		echo "$basename: xdg pictures directory defined but doesn't exist. creating $location"
 	end
 
-	if test ! -d $location/$sublocation
-		check_verbosity "mkdir -p '$location/$sublocation'"
-		mkdir -p "$location/$sublocation"
-		echo "$basename: tsubasa directory under xdg pictures directory doesn't exist. creating $location/$sublocation"
+	if test ! -d $location/Screenshots/$sublocation
+		check_verbosity "mkdir -p '$location/Screenshots/$sublocation'"
+		mkdir -p "$location/Screenshots/$sublocation"
+		echo "$basename: tsubasa directory under xdg pictures directory doesn't exist. creating $location/Screenshots/$sublocation"
 	end
 
 	if test "$DISPLAY" = ""
