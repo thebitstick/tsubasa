@@ -120,7 +120,7 @@ check_verbosity "message=(zenity --title='Share to Fediverse' --ok-label=Send \
 zenity --title='Share to Fediverse' --ok-label=Send --cancel-label=Cancel \
 	--text-info --editable --width=350 --height=250 | read -z message
 
-if test $status -eq 1
+if test $pipestatus[1] -eq 1
 	echo "$basename: cancelled by user"
 	exit 1
 end
