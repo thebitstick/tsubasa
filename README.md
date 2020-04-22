@@ -26,9 +26,13 @@ Takes screenshot of a window and sends it to Fediverse via toot, while being ver
 
 ## Installation
 ### AUR
-`yay -S tsubasa-git` for [tsubasa-git](https://aur.archlinux.org/packages/tsubasa-git/)
+`$ yay -S tsubasa` for [tsubasa](https://aur.archlinux.org/packages/tsubasa)
+
+OR
+
+`$ yay -S tsubasa-git` for [tsubasa-git](https://aur.archlinux.org/packages/tsubasa-git/)
 ### PKGBUILD
-`makepkg -sic`
+`$ makepkg -sic`
 ### Other
 It's just a shell script. Put it in your $PATH and you're good.
 
