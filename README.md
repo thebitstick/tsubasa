@@ -2,6 +2,28 @@
 
 Script for sharing screenshots and/or status updates using [ihabunek/toot](https://github.com/ihabunek/toot)
 
+## Usage
+```bash
+Usage:
+tsubasa [OPTION...] <command>
+
+Help Options:
+	-h,--help	Show help options
+	-V,--version	Print version information and exit
+	-v,--verbose	Print debug logging
+
+Application Commands:
+	nothing		(default) Saves a screenshot to the XDG Pictures directory and shares to Fediverse via toot
+	window		Saves a screenshot of the current window to the XDG Pictures directory and shares to Fediverse via toot
+	area		Saves a screenshot of a selected region to the XDG Pictures directory and shares to Fediverse via toot
+	text		Share a status update to Fediverse via toot
+```
+
+#### Example
+`$ tsubasa --verbose window`
+
+Takes screenshot of a window and sends it to Fediverse via toot, while being verbose and printing debugging info.
+
 ## Installation
 ### AUR
 `yay -S tsubasa-git` for [tsubasa-git](https://aur.archlinux.org/packages/tsubasa-git/)
