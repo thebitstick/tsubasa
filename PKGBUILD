@@ -21,5 +21,6 @@ pkgver() {
 
 package() {
 	install -D -t "$pkgdir/usr/bin" "${_pkgname}/tsubasa.fish"
+	install -D -t "$pkgdir/usr/share/applications" "${_pkgname}/tsubasa.desktop"
 	mv "$pkgdir/usr/bin/tsubasa.fish" "$pkgdir/usr/bin/tsubasa"
 } 

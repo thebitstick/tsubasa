@@ -1,0 +1,23 @@
+[Desktop Entry]
+Version=1.0
+Name=Tsubasa
+Exec=tsubasa
+Icon=remmina-scale-symbolic
+Type=Application
+Comment=Script for sharing screenshots and/or status updates
+Terminal=false
+Categories=GNOME;GTK;Network;
+Keywords=Fediverse;Mastodon;Screenshot;
+Actions=full;area;text;
+
+[Desktop Action full]
+Exec=tsubasa -v
+Name=Take Screenshot and Share
+
+[Desktop Action area]
+Exec=tsubasa -v area
+Name=Take Region/Area Screenshot and Share
+
+[Desktop Action text]
+Exec=tsubasa -v text
+Name=Share Status Update
