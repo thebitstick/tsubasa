@@ -36,6 +36,25 @@ function version
 	echo "$basename "(zenity --version)
 end
 
+if ! command -q toot
+	echo "$basename: toot not found in PATH. needed to send status updates"
+	exit 1
+end
+
+if ! command -q zenity
+	echo "$basename: zenity not found in PATH. needed for gui dialog"
+	exit 1
+end
+
+if ! command -q notify-send
+	echo "$basename: notify-send not found in PATH. optional, but needed for notifications"
+end
+
+if ! command -q xdg-user-dir
+	echo "$basename: freedesktop non-compliance detected"
+	exit 2
+end
+
 for item in $argv
 	switch $item
 		case "-h" "--help"
@@ -76,8 +95,8 @@ function screenshot
 		exit 1
 	end
 
-	if ! gnome-screenshot --version
-		echo "$basename: gnome-screenshot not found in PATH"
+	if ! command -q gnome-screenshot
+		echo "$basename: gnome-screenshot not found in PATH. needed for screenshots"
 		exit 1
 	end
 
@@ -93,10 +112,12 @@ function screenshot
 		echo "$basename: file not saved"
 		exit 1
 	else
-		check_verbosity "notify-send --icon='$fullname' --expire-time=5000 \
-			'$basename: Screenshot Saved' 'Saved to $fullname'"
-		notify-send --icon="$fullname" --expire-time=5000 \
-			"$basename: Screenshot Saved" "Saved to $fullname"
+		if command -q notify-send
+			check_verbosity "notify-send --icon='$fullname' --expire-time=5000 \
+				'$basename: Screenshot Saved' 'Saved to $fullname'"
+			notify-send --icon="$fullname" --expire-time=5000 \
+				"$basename: Screenshot Saved" "Saved to $fullname"
+		end
 	end
 end
 
@@ -110,11 +131,6 @@ else if test "$arg" != "text"
 	exit 1
 end
 
-if ! zenity --version
-	echo "$basename: zenity not found in PATH"
-	exit 1
-end
-
 check_verbosity "message=(zenity --title='Share to Fediverse' --ok-label=Send \
 	--cancel-label=Cancel --text-info --editable --width=350 --height=250)"
 zenity --title='Share to Fediverse' --ok-label=Send --cancel-label=Cancel \
@@ -122,11 +138,6 @@ zenity --title='Share to Fediverse' --ok-label=Send --cancel-label=Cancel \
 
 if test $pipestatus[1] -eq 1
 	echo "$basename: cancelled by user"
-	exit 1
-end
-
-if ! command -q toot
-	echo "$basename: toot not found in PATH"
 	exit 1
 end
 
@@ -140,13 +151,17 @@ end
 
 if test $status -eq 1
 	echo "$basename: unable to post status"
-	check_verbosity "notify-send --expire-time=5000 '$basename' 'Unable to post status'"
-	notify-send --expire-time=5000 "$basename" "Unable to post status"
+	if command -q notify-send
+		check_verbosity "notify-send --expire-time=5000 '$basename' 'Unable to post status'"
+		notify-send --expire-time=5000 "$basename" "Unable to post status"
+	end
 	exit 1
 else
 	echo "$basename: status post successful"
-	check_verbosity "notify-send --expire-time=5000 '$basename' 'Status Post Successful'"
-	notify-send --expire-time=5000 "$basename" "Status Post Successful"
+	if command -q notify-send
+		check_verbosity "notify-send --expire-time=5000 '$basename' 'Status Post Successful'"
+		notify-send --expire-time=5000 "$basename" "Status Post Successful"
+	end
 end
 
 exit 0
