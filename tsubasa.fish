@@ -21,7 +21,6 @@ function usage
 	echo ""
 	echo "Help Options:"
 	echo "	-h,--help	Show help options"
-	echo "	-V,--version	Print version information and exit"
 	echo "	-v,--verbose	Print debug logging"
 	echo ""
 	echo "Application Commands:"
@@ -30,10 +29,6 @@ function usage
 	echo "	area		Saves a screenshot of a selected region to the XDG Pictures directory and shares to Fediverse via toot"
 	echo "	text		Share a status update to Fediverse via toot"
 	echo ""
-end
-
-function version
-	echo "$basename "(zenity --version)
 end
 
 if ! command -q toot
@@ -59,9 +54,6 @@ for item in $argv
 	switch $item
 		case "-h" "--help"
 			usage
-			exit 0
-		case "-V" "--version"
-			version
 			exit 0
 		case "-v" "--verbose"
 			set verbosity 1
