@@ -1,4 +1,4 @@
-#!/bin/env fish
+#!/usr/bin/env fish
 
 # Tsubasa
 # Script for sharing screenshots and/or status updates using [McKael/madonctl](https://github.com/McKael/madonctl)
