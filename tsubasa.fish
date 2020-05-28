@@ -94,10 +94,10 @@ function screenshot
 
 	if test "$arg" = ""
 		check_verbosity "gnome-screenshot --file='$fullname' --clipboard"
-		gnome-screenshot --file="$fullname" --clipboard
+		gnome-screenshot --file="$fullname"
 	else
 		check_verbosity "gnome-screenshot --$arg --file='$fullname' --clipboard"
-		gnome-screenshot --"$arg" --file="$fullname" --clipboard
+		gnome-screenshot --"$arg" --file="$fullname"
 	end
 
 	if test ! -f $fullname
