@@ -1,14 +1,16 @@
 # Maintainer: TheBitStick <the at bitstick dot rip>
 pkgname=tsubasa-git
 _pkgname=tsubasa
-pkgver=r37.396d5f0
+pkgver=r43.ba0f14a
 pkgrel=1
 pkgdesc="Script for sharing screenshots and/or status updates"
 arch=('any')
 url="https://github.com/thebitstick/tsubasa"
 license=('GPL3')
-depends=('fish' 'gnome-screenshot' 'zenity' 'toot')
+depends=('fish' 'zenity' 'toot')
 makedepends=('git')
+optdepends=('gnome-screenshot: for screenshotting on GNOME/Wayland and other X11 desktops'
+	    'grimshot: for screenshotting on Sway and other wlroots desktops')
 provides=('tsubasa')
 conflicts=('tsubasa')
 source=('git+https://github.com/thebitstick/tsubasa')
