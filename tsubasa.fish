@@ -3,6 +3,7 @@
 # Tsubasa
 # Script for sharing screenshots and/or status updates using [McKael/madonctl](https://github.com/McKael/madonctl)
 
+set SWAY_ENABLED 0
 set basename (basename (status -f))
 set arg
 set message
@@ -87,17 +88,35 @@ function screenshot
 		exit 1
 	end
 
-	if ! command -q gnome-screenshot
+	# GNOME and Sway are the only desktops supported, sorry
+	if test "$XDG_SESSION_DESKTOP" = "sway"
+		set SWAY_ENABLED 1
+		if ! command -q grimshot
+			echo "$basename: grimshot not found in PATH. needed for screenshots"
+			exit 1
+		end
+	else if ! command -q gnome-screenshot
 		echo "$basename: gnome-screenshot not found in PATH. needed for screenshots"
 		exit 1
 	end
 
-	if test "$arg" = ""
-		check_verbosity "gnome-screenshot --file='$fullname' --clipboard"
+	if test "$arg" = "" && test "$SWAY_ENABLED" -eq 0
+		check_verbosity "gnome-screenshot --file='$fullname'"
 		gnome-screenshot --file="$fullname"
-	else
-		check_verbosity "gnome-screenshot --$arg --file='$fullname' --clipboard"
+	else if test "$SWAY_ENABLED" -eq 0
+		check_verbosity "gnome-screenshot --$arg --file='$fullname'"
 		gnome-screenshot --"$arg" --file="$fullname"
+	else if test "$arg" = "" && test "$SWAY_ENABLED" -eq 1
+		check_verbosity "grimshot save screen '$fullname'"
+		grimshot save screen "$fullname"
+	else if test "$SWAY_ENABLED" -eq 1
+		if test "$arg" = "window"
+			check_verbosity "grimshot save win '$fullname'"
+			grimshot save win "$fullname"
+		else
+			check_verbosity "grimshot save area '$fullname'"
+			grimshot save area "$fullname"
+		end
 	end
 
 	if test ! -f $fullname

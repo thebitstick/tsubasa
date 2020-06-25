@@ -49,7 +49,7 @@ To me, it was nothing but a script pretending to be a compiled binary. It used [
 
 I won't be creating a successor to ShareXin, but rather creating a script for those who still want ShareXin functionality in an easier format. This behaves like ShareXin for all the reasons I made it for. If it is useful to you, go ahead and use it. If you'd like to extend it, go ahead and fork it.
 
-The only improvements I will be making to this script will be to make it more portable and ensuring functionality on systems I use. But that's it. If you don't use GNOME, I'm sorry. If you don't use Linux/BSD, I'm sorry. If you'd prefer Twitter or some other services to upload to, I'm sorry.
+The only improvements I will be making to this script will be to make it more portable and ensuring functionality on systems I use. But that's it. If you don't use GNOME or Sway, I'm sorry. If you don't use Linux/BSD, I'm sorry. If you'd prefer Twitter or some other services to upload to, I'm sorry.
 
 ### Alternatives
 [Francesco149/sharenix](https://github.com/Francesco149/sharenix) - While not very active, it is a great Go app that has more in common with ShareX than ShareXin ever did. If you need custom API support, here you go!
