@@ -143,6 +143,9 @@ function screenshot
 		if test "$arg" = ""
 			check_verbosity "screencapture '$fullname'"
 			screencapture "$fullname"
+		else if test "$arg" = "window"
+			check_verbosity "screencapture -w '$fullname'"
+			screencapture -w "$fullname"
 		else
 			check_verbosity "screencapture -i '$fullname'"
 			screencapture -i "$fullname"
