@@ -38,7 +38,7 @@ if ! command -q toot
 	exit 1
 end
 
-if ! command -q zenity
+if ! command -q zenity && test "$uname" != "Darwin"
 	echo "$basename: zenity not found in PATH. needed for gui dialog"
 	exit 1
 end
@@ -188,10 +188,10 @@ if test "$uname" != "Darwin"
 	zenity --title='Share to Fediverse' --ok-label=Send --cancel-label=Cancel \
 		--text-info --editable --width=350 --height=250 | read -z message
 else if test "$uname" = "Darwin"
-	check_verbosity "message=(env GTK_THEME=Adwaita:dark zenity --title='Share to Fediverse' --ok-label=Send \
-		--cancel-label=Cancel --text-info --editable --width=350 --height=250)"
-	env GTK_THEME=Adwaita:dark zenity --title='Share to Fediverse' --ok-label=Send --cancel-label=Cancel \
-		--text-info --editable --width=350 --height=250 | read -z message
+	check_verbosity "osascript -e 'display dialog \"What\'s Happening?\" default answer \"\" \
+		with title \"Share to Fediverse\"' | cut -d: -f3"
+	osascript -e 'display dialog "What\'s Happening?" default answer "" with title "Share to Fediverse"' \
+		| cut -d: -f3 | read -z message
 end
 
 if test $pipestatus[1] -eq 1
