@@ -15,8 +15,8 @@ Help Options:
 Application Commands:
 	nothing		(default) Saves a screenshot to the XDG Pictures directory and shares to Fediverse via toot
 	window		Saves a screenshot of the current window to the XDG Pictures directory and shares to Fediverse via toot
-	area			Saves a screenshot of a selected region to the XDG Pictures directory and shares to Fediverse via toot
-	text			Share a status update to Fediverse via toot
+	area		Saves a screenshot of a selected region to the XDG Pictures directory and shares to Fediverse via toot
+	text		Share a status update to Fediverse via toot
 ```
 
 ### Example
