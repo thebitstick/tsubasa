@@ -34,8 +34,6 @@ All platforms require [ihabunek/toot](https://github.com/ihabunek/toot) for post
 Linux requires the use of `zenity` for GUI dialog, and either `gnome-screenshot` for GNOME (X11/Wayland) or `grimshot` ([grim](https://github.com/emersion/grim)/[slurp](https://github.com/emersion/slurp)) for Sway.  
 Linux can use `notify-send` for optional notifications.  
 macOS can use [terminal-notifier](https://github.com/julienXX/terminal-notifier) for optional notifications.  
-macOS requires the usage of the environment variable `$DARWIN_PHOTOS` as XDG standards are not followed there.
-Set `$DARWIN_PHOTOS` to the directory you would like to save screenshots to.  
 macOS does not require a separate utility for screenshotting as the native `screencapture` is extremely powerful and intuitive.
 `osascript` is used to generate native dialogs via Apple Script to ask you for a message before posting.
 
