@@ -64,9 +64,9 @@ end
 
 check toot needed to send status updates
 check_if_not_mac zenity needed for gui dialog
-check_if_not_mac notify-send optional, but needed for notifications
+check_if_not_mac notify-send needed for notifications
 check_if_not_mac xdg-user-dir needed to find pictures folder
-check_if_mac terminal-notifier optional, but needed for notifications
+check_if_mac terminal-notifier needed for notifications
 
 for item in $argv
 	switch $item
