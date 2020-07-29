@@ -139,7 +139,7 @@ function screenshot
 				grimshot save area "$fullname"
 			end
 		end
-	else if ! test_if_mac
+	else if test_if_mac
 		if test "$arg" = ""
 			check_verbosity "screencapture '$fullname'"
 			screencapture "$fullname"
