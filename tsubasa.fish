@@ -78,12 +78,7 @@ function screenshot
 	if test "$uname" != "Darwin"
 		set location (xdg-user-dir PICTURES)
 	else
-		if test "$DARWIN_PHOTOS" = ""
-			echo "$basename: please set DARWIN_PHOTOS variable to desired save directory. example (/Volumes/Photos)"
-			exit 3
-		else
-			set location $DARWIN_PHOTOS
-		end
+		set location $HOME/Pictures # Finder localizes the "display name" of some folders, so the path stays the same
 	end
 	set sublocation "Tsubasa/"(date '+%Y-%m')
 	set filename "screenshot-"(date '+%Y-%m-%d-%H-%M-%S')".png"
