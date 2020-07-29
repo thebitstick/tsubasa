@@ -33,28 +33,32 @@ function usage
 	echo ""
 end
 
-if ! command -q toot
-	echo "$basename: toot not found in PATH. needed to send status updates"
-	exit 1
+function check
+	if ! command -q $argv[1]
+		echo "$basename: $argv[1] not found in PATH. $argv[2..-1]"
+		exit 1
+	end
 end
 
-if ! command -q zenity && test "$uname" != "Darwin"
-	echo "$basename: zenity not found in PATH. needed for gui dialog"
-	exit 1
+function check_if_not_mac
+	if ! command -q $argv[1] && test "$uname" != "Darwin"
+		echo "$basename: $argv[1] not found in PATH. $argv[2..-1]"
+		exit 1
+	end
 end
 
-if ! command -q notify-send && test "$uname" != "Darwin"
-	echo "$basename: notify-send not found in PATH. optional, but needed for notifications"
+function check_if_mac
+	if ! command -q $argv[1] && test "$uname" == "Darwin"
+		echo "$basename: $argv[1] not found in PATH. $argv[2..-1]"
+		exit 1
+	end
 end
 
-if ! command -q terminal-notifier && test "$uname" == "Darwin"
-	echo "$basename: terminal-notifier not found in PATH. optional, but needed for notifications"
-end
-
-if ! command -q xdg-user-dir && test "$uname" != "Darwin"
-	echo "$basename: freedesktop non-compliance detected"
-	exit 2
-end
+check toot needed to send status updates
+check_if_not_mac zenity needed for gui dialog
+check_if_not_mac notify-send optional, but needed for notifications
+check_if_not_mac xdg-user-dir needed to find pictures folder
+check_if_mac terminal-notifier optional, but needed for notifications
 
 for item in $argv
 	switch $item
